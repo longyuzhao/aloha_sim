@@ -27,6 +27,14 @@ Tell mujoco which backend to use, otherwise the simulation will be very slow
 export MUJOCO_GL='egl'
 ```
 
+## Viewer
+
+Interact with the scene without a policy:
+
+```bash
+python aloha_sim/viewer.py --policy=no_policy --task_name=HandOverBanana
+```
+
 ## Tests
 
 ```bash
@@ -48,7 +56,7 @@ Trusted Testers. If you are not a Trusted Tester, sign-up
 Follow the setup instructions on how to serve the model.
 The same model served for real evals can be used in sim.
 
-### Interactive Viewer
+### Interactive Rollouts
 Start the viewer with a chosen task:
 
 ```bash

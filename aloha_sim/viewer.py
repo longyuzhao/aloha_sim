@@ -32,10 +32,8 @@ When the environment is running:
 - ctrl + mouse right applies force to an object
 """
 
-import base64
-import json
 import time
-from typing import Sequence, TypeAlias
+from typing import Any, Sequence, TypeAlias
 
 from absl import app
 from absl import flags
@@ -48,7 +46,6 @@ import mujoco
 import mujoco.viewer
 import numpy as np
 from rich import prompt
-import tensorflow as tf
 import tree
 
 from safari_sdk.model import gemini_robotics_policy
@@ -71,6 +68,12 @@ _TASK_NAME = flags.DEFINE_enum(
     'HandOverBanana',
     task_suite.TASK_FACTORIES.keys(),
     'Task name.',
+)
+_POLICY = flags.DEFINE_enum(
+    'policy',
+    'gemini_robotics_on_device',
+    ['gemini_robotics_on_device', 'no_policy'],
+    'Policy to use.',
 )
 
 # --- Global State for Viewer Interaction ---
@@ -109,6 +112,22 @@ _INIT_ACTION = np.asarray([
 _SERVE_ID = 'gemini_robotics_on_device'
 
 
+class NoPolicy:
+  """A no-op policy that always returns the initial action."""
+
+  def step(self, unused_observation: Any) -> np.ndarray:
+    return _INIT_ACTION
+
+  def reset(self) -> None:
+    pass
+
+  def set_task_instruction(self, unused_instruction: str) -> None:
+    pass
+
+  def setup(self) -> None:
+    pass
+
+
 def _key_callback(key: int) -> None:
   """Viewer callbacks for key-presses."""
   if key == 32:  # Space bar
@@ -128,32 +147,11 @@ def _key_callback(key: int) -> None:
     logging.info('UNKNOWN KEY PRESS = %s', key)
 
 
-def run_query(query_model, timestep, future_actions, instruction):
-  """Runs a query to the model."""
-  sim_obs = timestep.observation  # pylint: disable=protected-access
-  obs = {
-      f'images/{camera_name}': (
-          base64.b64encode(
-              tf.io.encode_jpeg(sim_obs[camera_name]).numpy()
-          ).decode('utf-8')
-      )
-      for camera_name, _ in _ALOHA_CAMERAS.items()
-  } | {
-      joint_name: np.expand_dims(sim_obs[joint_name], axis=0).tolist()
-      for joint_name, _ in _ALOHA_JOINTS.items()
-  }
-  obs['task_instruction'] = instruction
-  obs['conditioning'] = future_actions
-  obs_json = json.dumps(obs).encode('utf-8')
-  request_bytes = obs_json
-  response_bytes = query_model(request_bytes, timeout=5)
-  response = json.loads(response_bytes.decode('utf-8'))
-  return response
-
-
 def main(argv: Sequence[str]) -> None:
-  if len(argv) > 1:
-    raise app.UsageError('Too many command-line arguments.')
+  if len(argv) > 2:
+    raise app.UsageError(
+        'Too many command-line arguments.'
+    )
 
   logging.info('Initializing %s environment...', _TASK_NAME.value)
   if _TASK_NAME.value not in task_suite.TASK_FACTORIES.keys():
@@ -176,25 +174,28 @@ def main(argv: Sequence[str]) -> None:
   env.reset()
 
   # Instantiate the policy.
-  try:
-    print('Creating policy...')
-    policy = gemini_robotics_policy.GeminiRoboticsPolicy(
-        serve_id=_SERVE_ID,
-        task_instruction=env.task.get_instruction(),
-        inference_mode=gemini_robotics_policy.InferenceMode.SYNCHRONOUS,
-        cameras=_ALOHA_CAMERAS,
-        joints=_ALOHA_JOINTS,
-        min_replan_interval=25,
-        robotics_api_connection=genai_robotics.RoboticsApiConnectionType.LOCAL,
-    )
-    policy.setup()  # Initialize the policy
-    print('GeminiRoboticsPolicy initialized successfully.')
-  except ValueError as e:
-    print(f'Error initializing policy: {e}')
-    raise
-  except Exception as e:  # pylint: disable=broad-except
-    print(f'An unexpected error occurred during initialization: {e}')
-    raise
+  if _POLICY.value == 'no_policy':
+    policy = NoPolicy()
+  else:
+    try:
+      print('Creating policy...')
+      policy = gemini_robotics_policy.GeminiRoboticsPolicy(
+          serve_id=_SERVE_ID,
+          task_instruction=env.task.get_instruction(),
+          inference_mode=gemini_robotics_policy.InferenceMode.SYNCHRONOUS,
+          cameras=_ALOHA_CAMERAS,
+          joints=_ALOHA_JOINTS,
+          min_replan_interval=25,
+          robotics_api_connection=genai_robotics.RoboticsApiConnectionType.LOCAL,
+      )
+      policy.setup()  # Initialize the policy
+      print('GeminiRoboticsPolicy initialized successfully.')
+    except ValueError as e:
+      print(f'Error initializing policy: {e}')
+      raise
+    except Exception as e:  # pylint: disable=broad-except
+      print(f'An unexpected error occurred during initialization: {e}')
+      raise
 
   logging.info('Running policy...')
 

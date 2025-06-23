@@ -128,6 +128,7 @@ def run_episode(task_name, ep_idx, env):
 
 
 def main(_):
+  success_rates = {}
   for task_name in task_suite.TASK_FACTORIES.keys():
     success_count = 0
     for ep_idx in range(_NUM_EPISODES_PER_TASK):
@@ -135,10 +136,12 @@ def main(_):
       success = run_episode(task_name, ep_idx, env)
       if success:
         success_count += 1
-    print(
-        f'----- Success Rate for Task {task_name}:'
-        f' {success_count / _NUM_EPISODES_PER_TASK}'
-    )
+    success_rates[task_name] = success_count / _NUM_EPISODES_PER_TASK
+    print(f'----- Task: {task_name}, Success rate: {success_rates[task_name]}')
+
+  print('All Task Success Rates:')
+  for task_name, success_rate in success_rates.items():
+    print(f'{task_name}:\t{success_rate}')
 
 
 if __name__ == '__main__':
