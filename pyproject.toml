@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aloha_sim"
+version = "1.0.0"
+requires-python = ">=3.12"
+dynamic = ["dependencies"]
+
+[project.optional-dependencies]
+dev = []
+
+[tool.setuptools.package-data]
+"aloha_sim" = ["assets/**"]
