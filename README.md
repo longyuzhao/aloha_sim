@@ -57,10 +57,6 @@ Follow our [SDK documentation](https://github.com/google-deepmind/gemini-robotic
 to serve the model. The **same model** used for real-world evaluations can be
 directly applied in the simulation environment.
 
-Here is a video walkthrough:
-
-https://github.com/google-deepmind/aloha_sim/raw/refs/heads/main/media/sim_eval_walkthrough.mp4
-
 ### Interactive Rollouts
 Start the viewer with a chosen task:
 
