@@ -50,11 +50,12 @@ python -m unittest discover aloha_sim/tasks/test '*_test.py'
 ⚠️ **For Gemini Robotics Trusted Testers Only**
 
 Inference with Gemini Robotics models is intended for
-Trusted Testers. If you are not a Trusted Tester, sign-up
+Trusted Testers. If you are not a Trusted Tester, sign up
 [here](https://deepmind.google/models/gemini-robotics/).
 
-Follow the setup instructions on how to serve the model.
-The same model served for real evals can be used in sim.
+Follow our [SDK documentation](https://github.com/google-deepmind/gemini-robotics-sdk)
+to serve the model. The same model used for real-world evaluations can be
+directly applied in the simulation environment.
 
 ### Interactive Rollouts
 Start the viewer with a chosen task:

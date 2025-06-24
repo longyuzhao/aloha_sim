@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-r"""Basic MuJoCo viewer for dm_env.Environment instances.
+r"""Interactive viewer for running model inference.
 
 Instructions:
 
