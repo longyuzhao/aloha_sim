@@ -59,7 +59,7 @@ directly applied in the simulation environment.
 
 Here is a video walkthrough:
 
-https://github.com/google-deepmind/aloha_sim/tree/main/media/sim_eval_walkthrough.mp4
+https://github.com/google-deepmind/aloha_sim/raw/refs/heads/main/media/sim_eval_walkthrough.mp4
 
 ### Interactive Rollouts
 Start the viewer with a chosen task:
