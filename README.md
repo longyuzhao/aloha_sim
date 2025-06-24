@@ -54,8 +54,12 @@ Trusted Testers. If you are not a Trusted Tester, sign up
 [here](https://deepmind.google/models/gemini-robotics/).
 
 Follow our [SDK documentation](https://github.com/google-deepmind/gemini-robotics-sdk)
-to serve the model. The same model used for real-world evaluations can be
+to serve the model. The **same model** used for real-world evaluations can be
 directly applied in the simulation environment.
+
+Here is a video walkthrough:
+
+https://github.com/google-deepmind/aloha_sim/tree/main/media/sim_eval_walkthrough.mp4
 
 ### Interactive Rollouts
 Start the viewer with a chosen task:
@@ -116,3 +120,4 @@ backend, e.g. `MUJOCO_GL='egl'`
 
 ## Note
 This is not an officially supported Google product.
+
