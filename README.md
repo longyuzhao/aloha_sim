@@ -55,7 +55,14 @@ Trusted Testers. If you are not a Trusted Tester, sign up
 
 Follow our [SDK documentation](https://github.com/google-deepmind/gemini-robotics-sdk)
 to serve the model. The **same model** used for real-world evaluations can be
-directly applied in the simulation environment.
+directly applied in simulation.
+
+Checkout the walkthrough video:
+<p align="middle">
+    <a href="https://www.youtube.com/watch?v=nVMY3-kWhOc
+    " target="_blank"><img src="media/walkthrough.png"
+    alt="Video walkthrough of sim eval" width="718" height="403" border="10"/></a>
+</p>
 
 ### Interactive Rollouts
 Start the viewer with a chosen task:
@@ -107,6 +114,47 @@ python aloha_sim/run_eval.py
 Runs N evaluation episodes for all tasks and save videos
 in `/tmp/`.
 
+## Benchmark
+Success Rates (with 95% Confidence Interval) from 100 episodes per task x 3
+runs.
+
+### Basic Tasks
+
+| Task | Gemini Robotics On Device<br>Success Rate (95% CI) |
+|:------|:-----------------------:|
+| BowlOnRack | 99.3 (0.93) |
+| DrawerOpen | 87.0 (3.83) |
+| HandOverBanana | 99.0 (1.13) |
+| HandOverPen | 93.7 (2.77) |
+| LaptopClose | 78.0 (4.71) |
+
+### Instruction-Following Tasks
+
+| Task | Gemini Robotics On Device<br>Success Rate (95% CI) |
+|:------|:-----------------------:|
+| DiningPlaceBananaInBowl | 93.3 (2.84) |
+| DiningPlaceMugOnPlate | 32.0 (5.31) |
+| DiningPlacePenInContainer | 19.7 (4.52) |
+| ToolsPlaceCanOpenerInLeftCompartment | 82.0 (4.37) |
+| ToolsPlaceCanOpenerInRightCompartment | 73.3 (5.03) |
+| ToolsPlaceMagnifierInRightCompartment | 91.3 (3.20) |
+| ToolsPlaceMagnifierInLeftCompartment | 81.7 (4.40) |
+| ToolsPlaceScissorsInLeftCompartment | 73.3 (5.03) |
+| ToolsPlaceScissorsInRightCompartment | 79.0 (4.64) |
+| ToolsPlaceScrewdriverInLeftCompartment | 81.0 (4.46) |
+| ToolsPlaceScrewdriverInRightCompartment | 78.3 (4.69) |
+| BlocksSpelling | 4.7 (2.40) |
+
+### Dexterous Tasks
+
+| Task | Gemini Robotics On Device<br>Success Rate (95% CI) |
+|:------|:-----------------------:|
+| MarkerRemoveLid | 73.7 (5.01) |
+| DesktopWrapHeadphone | 8.7 (3.21) |
+| TowelFoldInHalf | 6.7 (3.18) |
+
+To reproduce the results, use `random_seed = 42 + episode_index`.
+
 ## Tips
 
 - If the environment stepping is very slow, check that you are using the right
@@ -116,4 +164,3 @@ backend, e.g. `MUJOCO_GL='egl'`
 
 ## Note
 This is not an officially supported Google product.
-

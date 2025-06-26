@@ -58,11 +58,6 @@ State: TypeAlias = tree.Structure[np.typing.ArrayLike]
 Action: TypeAlias = np.typing.ArrayLike
 ExtraOutput: TypeAlias = tree.Structure[np.typing.ArrayLike]
 
-_SERVER_ADDRESS = flags.DEFINE_string(
-    'server_address',
-    'localhost:60061',
-    'Server address.',
-)
 _TASK_NAME = flags.DEFINE_enum(
     'task_name',
     'HandOverBanana',
