@@ -64,6 +64,12 @@ Checkout the walkthrough video:
     alt="Video walkthrough of sim eval" width="718" height="403" border="10"/></a>
 </p>
 
+### Install SDK dependency
+
+```bash
+pip install aloha_sim[inference]
+```
+
 ### Interactive Rollouts
 Start the viewer with a chosen task:
 

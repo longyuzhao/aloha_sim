@@ -5,11 +5,28 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "aloha_sim"
 version = "1.0.0"
+description = "Aloha simulation package"
 requires-python = ">=3.10"
-dynamic = ["dependencies"]
+dependencies = [
+    "absl-py",
+    "dm-control>=1.0.31",
+    "dm-env>=1.6",
+    "grpcio",
+    "immutabledict",
+    "mediapy",
+    "mujoco>=3.3.3",
+    "numpy",
+    "pillow",
+    "rich"
+]
 
 [project.optional-dependencies]
-dev = []
+inference = [
+    "safari-sdk>=2.4.0"
+]
 
 [tool.setuptools.package-data]
 "aloha_sim" = ["assets/**"]
+
+[tool.setuptools.packages.find]
+where = ["."]

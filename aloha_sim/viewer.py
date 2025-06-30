@@ -45,11 +45,12 @@ from dm_env import specs
 import mujoco
 import mujoco.viewer
 import numpy as np
+from rich import console
+from rich import panel
 from rich import prompt
+from rich import text
 import tree
 
-from safari_sdk.model import gemini_robotics_policy
-from safari_sdk.model import genai_robotics
 
 ActionSpec: TypeAlias = specs.Array
 ExtraOutputSpec: TypeAlias = tree.Structure[specs.Array]
@@ -174,6 +175,10 @@ def main(argv: Sequence[str]) -> None:
   else:
     try:
       print('Creating policy...')
+      # Import safari_sdk only when needed for inference
+      from safari_sdk.model import gemini_robotics_policy
+      from safari_sdk.model import genai_robotics
+
       policy = gemini_robotics_policy.GeminiRoboticsPolicy(
           serve_id=_SERVE_ID,
           task_instruction=env.task.get_instruction(),
@@ -185,6 +190,32 @@ def main(argv: Sequence[str]) -> None:
       )
       policy.setup()  # Initialize the policy
       print('GeminiRoboticsPolicy initialized successfully.')
+    except ModuleNotFoundError:
+      rich_console = console.Console()
+
+      error_text = text.Text()
+      error_text.append('🚨 ', style='bold red')
+      error_text.append('safari_sdk not available!', style='bold red')
+
+      help_text = text.Text()
+      help_text.append(
+          'To use inference features, install the inference dependencies:\n',
+          style='yellow',
+      )
+      help_text.append(
+          '   pip install aloha_sim[inference]\n\n', style='bold cyan'
+      )
+      help_text.append('Or run without inference using:\n', style='yellow')
+      help_text.append(
+          '   python aloha_sim/viewer.py --policy=no_policy', style='bold cyan'
+      )
+
+      error_panel = panel.Panel(
+          help_text, title=error_text, border_style='red', padding=(1, 2)
+      )
+
+      rich_console.print(error_panel)
+      raise
     except ValueError as e:
       print(f'Error initializing policy: {e}')
       raise
